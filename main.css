@@ -36,28 +36,30 @@ body {
     inset 0px 1px 2px rgba(0, 0, 0, 0.25), 0px 1px 0px rgba(255, 255, 255, 0.1);
   border-radius: 5px;
   background-color: #2a292a;
+  overflow: hidden;
 }
 
 /* CUSTOM */
-
 /* original image 2400 × 1078 */
-.widget__zoom-img {
-  background-repeat: no-repeat;
+.widget-zoom:after {
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 9999;
-  opacity: 0;
-  transition: opacity 0.3s;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  /* opacity: 0;
+  transition: opacity 0.3s; */
 }
 
-.widget__zoom-img:hover {
+/* .widget-zoom:hover {
   opacity: 1;
-}
+} */
 
-.widget__main-image {
+.widget-zoom__img {
   width: 100%;
   height: 100%;
   object-fit: cover;
