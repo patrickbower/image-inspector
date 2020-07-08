@@ -1,51 +1,124 @@
-const settings = {
-  widgetElement: undefined,
-  zoomWidget: 'widget',
-  zoomImg: 'widget__zoom-img'
+const selector = {
+  zoomWidget: 'widget-zoom',
+  zoomImage: 'widget-zoom-img',
+  zoomEnabled: 'js-enabled-widget-zoom',
+  zoomMin: 'data-zoom-img-scale-min',
+  zoomMax: 'data-zoom-img-scale-max',
+  zoomAmount: 'data-zoom-amount',
+  imgTags: 'widget-zoom-img-tag-group',
+  imgTagLevel: 'data-zoom-level'
 }
 
-const createZoomImgEle = (zoomImgEle) => {
-  // get image src from data attr in DOM element
-  const zoomImageUrl = zoomImgEle.dataset.zoomImg;
-  // create an image element in memory
-  const img = new Image();
-  // set image src to load image element in memory
-  img.src = zoomImageUrl;
-  // get original width from element in memory
-  const zoomImageWidth = img.width;
-  // get original height from element in memory
-  const zoomImageHeight = img.height;
-  // create background image on DOM widget element
-  zoomImgEle.setAttribute('style',` 
-    background-image: url(${zoomImageUrl}); 
-    background-size: ${zoomImageWidth}px ${zoomImageHeight}px; 
-    background-position: 0 0;
-    `);
+class Zoom {
+  constructor(component){
+    this.getElements(component);
+    this.setUpZoom();
+    this.bindEvents();
+  }
+  
+  getElements(component){
+    this.component = component;
+    this.zoomImg = component.querySelector(`.${selector.zoomImage}`);
+  }
+
+  setUpZoom(){
+    this.getSizes();
+    this.setupZoomImageStyles();
+    this.setupZoomImageElement();
+  }
+
+  getSizes(){
+    this.zoomImgSize = this.zoomImg.getBoundingClientRect();
+    this.scales = this.getScales();
+  }
+
+  setupZoomImageStyles() {
+    this.component.classList.add(`${selector.zoomEnabled}`);
+  }
+
+  setupZoomImageElement() {
+    this.imgTags = this.zoomImg.querySelectorAll(`.${selector.imgTags}`);
+    this.setScale(this.scales.current);
+    // setupZoomImageElement - add src to element?
+  }
+
+  turnToPercentage(x, ofY) {
+    return (x / ofY) * 100;
+  }
+
+  // horizontal coordinate - left position relative to the viewport
+  // convert into percentage from left
+  getHorizontalPosition(event){
+    const pointerX = event.clientX - this.zoomImgSize.left;
+    return this.turnToPercentage(pointerX, this.zoomImgSize.width);
+  }
+
+  getVerticalPosition(event){
+    const pointerY = event.clientY - this.zoomImgSize.top;
+    return this.turnToPercentage(pointerY, this.zoomImgSize.height); 
+  }
+
+  // set inline css transform x% and y% position
+  changePosition(x, y) {
+    this.zoomImg.style.transformOrigin = `${x}% ${y}%`;
+  }
+
+  getZoomImgDataInt(dataAttr){
+    return parseInt(this.component.getAttribute(dataAttr));
+  }
+
+  getScales(){
+    const min = this.getZoomImgDataInt(selector.zoomMin);
+    const max = this.getZoomImgDataInt(selector.zoomMax);
+    const current = this.getZoomImgDataInt(selector.zoomAmount);
+    return ({min, max, current});
+  }
+
+  setScale(scale){
+    this.zoomImg.style.transform = `scale(${scale})`;
+    this.component.dataset.zoomAmount = `x${scale}`;
+    this.displayImgTags();
+  }
+
+  filterImgTags(scale){
+    return Array.from(this.imgTags).filter((node) => {
+      const tagLevel = parseInt(node.getAttribute(selector.imgTagLevel));
+      return tagLevel <= scale;
+    });
+  }
+
+  displayImgTags(){
+    this.imgTags.forEach(node => node.classList.remove('display'));
+    const filterTags = this.filterImgTags(this.scales.current);
+    filterTags.forEach(node => node.classList.add('display'));
+  }
+
+  zoomImageOnHover(event){
+    const positionX = this.getHorizontalPosition(event);
+    const positionY = this.getVerticalPosition(event);
+    this.changePosition(positionX, positionY);
+  }
+
+  zoomImageOnClick() {
+    // zoom back to default if max reached
+    if (this.scales.current === this.scales.max) {
+      this.scales.current = this.scales.min;
+    } else {
+      this.scales.current++;
+    }
+    this.setScale(this.scales.current);
+  }
+
+  bindEvents() {
+    this.zoomImg.addEventListener('mousemove', this.zoomImageOnHover.bind(this));
+    this.zoomImg.addEventListener('click', this.zoomImageOnClick.bind(this));
+  }
 }
 
-const hoverPosition = (event) => {
-  const zoomImg = event.target.getBoundingClientRect();
-  // x position within image
-  const pointerX = event.clientX - zoomImg.left;
-  // y position within image
-  const pointerY = event.clientY - zoomImg.top;  
-
-  const positionX = Math.floor((pointerX / zoomImg.width) * 100);
-  const positionY = Math.floor((pointerY / zoomImg.height) * 100);
-
-  event.target.style.backgroundPosition = `${positionX}% ${positionY}%`;
-}
-
-const addEvents = (zoomImgEle) => {
-  zoomImgEle.addEventListener('mousemove', hoverPosition);
-}
-
-// Start when page has loaded
+// find widgets setup each instance
 window.addEventListener("load", () => {
-  // get widget instance (if multiple loop to initialize each instance)
-  const zoomImgEle = document.querySelector(`.${settings.zoomImg}`);
-  // setup zoom image
-  createZoomImgEle(zoomImgEle);
-  // add events
-  addEvents(zoomImgEle);
+  const zoomImageElement = document.querySelectorAll(`.${selector.zoomWidget}`);
+  zoomImageElement.forEach((component) => {
+    new Zoom(component);
+  });
 });

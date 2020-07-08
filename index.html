@@ -1,16 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Image Inspector</title>
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="main.css" />
   </head>
   <body>
-    <div class='widget'>
-      <div class="widget__zoom-img" data-zoom-img="https://m.media-amazon.com/images/G/01/adt/hiring/doppler.jpg"></div>
-      <img class="widget__main-image" src="https://m.media-amazon.com/images/G/01/adt/hiring/doppler.jpg" alt="Doppler Building"/>
-    </div>
+    <section>
+      <h1>Widget</h1>
+      <div
+        class="widget widget-zoom"
+        data-zoom-amount="2"
+        data-zoom-img-scale-min="2"
+        data-zoom-img-scale-max="4"
+      >
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          viewBox="0 0 2400 1078"
+          class="widget-zoom-img"
+        >
+          <image
+            width="2400"
+            height="1078"
+            xlink:href="https://m.media-amazon.com/images/G/01/adt/hiring/doppler.jpg"
+          ></image>
+          <g class="widget-zoom-img-tag-group" data-zoom-level="2">
+            <text x="1192" y="695" class="widget-zoom-img-tag">
+              Amazon London HQ
+            </text>
+          </g>
+          <g class="widget-zoom-img-tag-group" data-zoom-level="3">
+            <text x="564" y="220" class="widget-zoom-img-tag">
+              Left Building
+            </text>
+            <text x="1300" y="220" class="widget-zoom-img-tag">
+              Central Office
+            </text>
+          </g>
+          <g class="widget-zoom-img-tag-group" data-zoom-level="4">
+            <text x="924" y="489" class="widget-zoom-img-tag">
+              Amazon Cafeteria
+            </text>
+            <text x="777" y="251" class="widget-zoom-img-tag">
+              Behind Building
+            </text>
+          </g>
+        </svg>
+
+        <img
+          src="https://m.media-amazon.com/images/G/01/adt/hiring/doppler.jpg"
+          alt="Doppler Building"
+        />
+      </div>
+    </section>
+
     <script src="./main.js" type="text/javascript"></script>
   </body>
 </html>
