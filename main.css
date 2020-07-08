@@ -1,11 +1,10 @@
-/* @font-face {
+@font-face {
   font-family: "Amazon Ember";
   src: url(https://m.media-amazon.com/images/G/01/adt/hiring/amazonember.woff2)
       format("woff2"),
     url(https://m.media-amazon.com/images/G/01/adt/hiring/amazonember.woff)
       format("woff");
-} */
-
+}
 html,
 body {
   position: relative;
@@ -23,6 +22,12 @@ body {
   line-height: 1.5;
 }
 
+h1 {
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
 .widget {
   position: relative;
   margin: 0px auto;
@@ -36,31 +41,79 @@ body {
     inset 0px 1px 2px rgba(0, 0, 0, 0.25), 0px 1px 0px rgba(255, 255, 255, 0.1);
   border-radius: 5px;
   background-color: #2a292a;
-  overflow: hidden;
+  display: flex;
+  justify-content: center;
 }
 
-/* CUSTOM */
-/* original image 2400 × 1078 */
-.widget-zoom:after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  /* opacity: 0;
-  transition: opacity 0.3s; */
-}
-
-/* .widget-zoom:hover {
-  opacity: 1;
-} */
-
-.widget-zoom__img {
+.widget img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.links {
+  text-align: center;
+}
+
+/* Zoom */
+.widget-zoom {
+  overflow: hidden;
+}
+
+.widget-zoom-img {
+  min-height: 100%;
+  position: absolute;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+.widget-zoom-img:hover {
+  opacity: 1;
+}
+
+/* interaction icons */
+.js-enabled-widget-zoom:before,
+.js-enabled-widget-zoom:hover:after {
+  content: url("./i-zoom.svg");
+  display: inline-block;
+  position: absolute;
+  bottom: 0.25rem;
+  right: 0.25rem;
+  z-index: 2;
+  line-height: 0;
+  pointer-events: none;
+}
+
+.js-enabled-widget-zoom:hover:after {
+  content: attr(data-zoom-amount);
+  background-color: white;
+  border-radius: 50%;
+  color: black;
+  line-height: 1.5;
+  width: 25px;
+  height: 25px;
+}
+
+.js-enabled-widget-zoom:hover {
+  cursor: url("./i-zoom.svg"), auto;
+}
+
+/* image text */
+.widget-zoom-img-tag {
+  text-anchor: middle;
+  fill: white;
+  font-size: 2em;
+  text-shadow: 0 0 10px black, 0 0 10px black, 0 0 10px black;
+  pointer-events: none;
+}
+
+.widget-zoom-img-tag-group {
+  opacity: 0;
+}
+
+.widget-zoom-img-tag-group.display {
+  opacity: 1;
 }
